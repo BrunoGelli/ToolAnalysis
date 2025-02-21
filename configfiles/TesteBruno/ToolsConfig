@@ -1,2 +1,5 @@
 myLoadGeometry LoadGeometry configfiles/TesteBruno/LoadGeometryConfig
 myLoadANNIEEvent LoadANNIEEvent configfiles/TesteBruno/LoadANNIEEventConfig
+MyTimeClustering TimeClustering configfiles/TesteBruno/TimeClusteringConfig
+myFindMrdTracks FindMrdTracks configfiles/TesteBruno/FindMrdTracksConfig
+myPlotMrdTracks MrdPaddlePlot configfiles/TesteBruno/MrdPaddlePlotConfig
