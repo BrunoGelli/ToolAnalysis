@@ -22,5 +22,5 @@ Tools_File configfiles/TesteBruno/ToolsConfig  ## list of tools to run and their
 
 ##### Run Type #####
 Inline -1 ## number of Execute steps in program, -1 infinite loop that is ended by user 
-Interactive 1 ## set to 1 if you want to run the code interactively
+Interactive 0 ## set to 1 if you want to run the code interactively
 
