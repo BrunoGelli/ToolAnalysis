@@ -306,7 +306,7 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 					for (int i_layer = 0; i_layer < (int) zLayers.size(); i_layer++){
 						
 						// Exclude first and layer from efficiency determination						
-						if (i_layer == 0 || i_layer == int(zLayers.size()) -1) continue;
+						// if (i_layer == 0 || i_layer == int(zLayers.size()) -1) continue;
 
 							double x_layer, y_layer;
 							FindPaddleIntersection(StartVertex, StopVertex, x_layer, y_layer, zLayers.at(i_layer));
