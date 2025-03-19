@@ -305,10 +305,20 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 
 					for (int i_layer = 0; i_layer < (int) zLayers.size(); i_layer++){
 						
-						// Exclude first and layer from efficiency determination						
-						// if (i_layer == 0 || i_layer == int(zLayers.size()) -1) continue;
+						// Exclude first and layer from efficiency determination
+						double x_layer, y_layer;
+						
+						if (i_layer == 0)
+						{
+							x_layer = StartVertex.X();
+							y_layer = StartVertex.Y();
+						}
+						if (i_layer == int(zLayers.size()) -1)
+						{
+							x_layer = StopVertex.X();
+							y_layer = StopVertex.Y();
+						}
 
-							double x_layer, y_layer;
 							FindPaddleIntersection(StartVertex, StopVertex, x_layer, y_layer, zLayers.at(i_layer));
 							if (verbosity > 2) std::cout <<"MrdPaddleEfficiencyPreparer tool: FindPaddleIntersection found x_layer = "<<x_layer<<"& y_layer = "<<y_layer<<" for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
 
