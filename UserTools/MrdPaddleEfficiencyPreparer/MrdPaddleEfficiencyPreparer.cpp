@@ -35,23 +35,23 @@ bool MrdPaddleEfficiencyPreparer::Initialise(std::string configfile, DataModel &
 
 	std::map<std::string,std::map<unsigned long,Detector*> >* Detectors = geom->GetDetectors();
 
-  	for (std::map<unsigned long,Detector*>::iterator it  = Detectors->at("MRD").begin();
-                                                    it != Detectors->at("MRD").end();
-                                                  ++it){
-	    Detector* amrdpmt = it->second;
-	    unsigned long detkey = it->first;
-	    unsigned long chankey = amrdpmt->GetChannels()->begin()->first;
-	    Paddle *mrdpaddle = (Paddle*) geom->GetDetectorPaddle(detkey);
+	for (std::map<unsigned long,Detector*>::iterator it  = Detectors->at("MRD").begin();
+		it != Detectors->at("MRD").end();
+		++it){
+		Detector* amrdpmt = it->second;
+	unsigned long detkey = it->first;
+	unsigned long chankey = amrdpmt->GetChannels()->begin()->first;
+	Paddle *mrdpaddle = (Paddle*) geom->GetDetectorPaddle(detkey);
 
-	    double xmin = mrdpaddle->GetXmin();
-	    double xmax = mrdpaddle->GetXmax();
-	    double xmean = 0.5*(xmin+xmax);
-	    double ymin = mrdpaddle->GetYmin();
-	    double ymax = mrdpaddle->GetYmax();
-	    double ymean = 0.5*(ymin+ymax);
-	    double zmin = mrdpaddle->GetZmin();
-	    double zmax = mrdpaddle->GetZmax();
-	    double zmean = 0.5*(zmin+zmax);
+	double xmin = mrdpaddle->GetXmin();
+	double xmax = mrdpaddle->GetXmax();
+	double xmean = 0.5*(xmin+xmax);
+	double ymin = mrdpaddle->GetYmin();
+	double ymax = mrdpaddle->GetYmax();
+	double ymean = 0.5*(ymin+ymax);
+	double zmin = mrdpaddle->GetZmin();
+	double zmax = mrdpaddle->GetZmax();
+	double zmean = 0.5*(zmin+zmax);
 	    int orientation = mrdpaddle->GetOrientation();    //0 is horizontal, 1 is vertical
 	    int half = mrdpaddle->GetHalf();                  //0 or 1
 	    int side = mrdpaddle->GetSide();
@@ -69,11 +69,11 @@ bool MrdPaddleEfficiencyPreparer::Initialise(std::string configfile, DataModel &
 	    if (zLayers.count(layer)==0) {
 	    	zLayers.emplace(layer,zmean);
 	    	orientationLayers.emplace(layer,orientation);
-		std::vector<unsigned long> vec_chankey;
-		vec_chankey.push_back(chankey);
-		channelsLayers.emplace(layer,vec_chankey);
+	    	std::vector<unsigned long> vec_chankey;
+	    	vec_chankey.push_back(chankey);
+	    	channelsLayers.emplace(layer,vec_chankey);
 	    } else {
-		channelsLayers.at(layer).push_back(chankey);
+	    	channelsLayers.at(layer).push_back(chankey);
 	    }
 	    if (expected_MRDHits.count(layer)==0) {
 	    	std::stringstream ss_expectedhist, ss_expectedhist_layer;
@@ -81,34 +81,34 @@ bool MrdPaddleEfficiencyPreparer::Initialise(std::string configfile, DataModel &
 	    	ss_expectedhist << "expectedhits_layer"<<layer<<"_chkey"<<chankey;
 	    	ss_layer << "Expected Hits Layer "<<layer<<" Chkey "<<chankey;
 	    	TH1D *hist_expected = new TH1D(ss_expectedhist.str().c_str(),ss_layer.str().c_str(),50,layermin, layermax);
-		if (orientation == 0) hist_expected->GetXaxis()->SetTitle("y [m]");
-		else hist_expected->GetXaxis()->SetTitle("x [m]");
+	    	if (orientation == 0) hist_expected->GetXaxis()->SetTitle("y [m]");
+	    	else hist_expected->GetXaxis()->SetTitle("x [m]");
 	    	std::map<unsigned long, TH1D*> map_chkey_hist_expected;
-		map_chkey_hist_expected.emplace(chankey,hist_expected);
-		expected_MRDHits.emplace(layer,map_chkey_hist_expected);
+	    	map_chkey_hist_expected.emplace(chankey,hist_expected);
+	    	expected_MRDHits.emplace(layer,map_chkey_hist_expected);
 	    	ss_expectedhist_layer << "expectedhits_wholelayer"<<layer<<"_chkey"<<chankey;
 	    	ss_layer_layer << "Expected Hits Whole Layer "<<layer<<" Chkey "<<chankey;
 	    	TH1D *hist_expected_layer = new TH1D(ss_expectedhist_layer.str().c_str(),ss_layer_layer.str().c_str(),200,-extents[layer],extents[layer]);
-		if (orientation == 0) hist_expected_layer->GetXaxis()->SetTitle("y [m]");
-		else hist_expected_layer->GetXaxis()->SetTitle("x [m]");
+	    	if (orientation == 0) hist_expected_layer->GetXaxis()->SetTitle("y [m]");
+	    	else hist_expected_layer->GetXaxis()->SetTitle("x [m]");
 	    	std::map<unsigned long, TH1D*> map_chkey_hist_expected_layer;
-		map_chkey_hist_expected_layer.emplace(chankey,hist_expected_layer);
-		expected_MRDHits_layer.emplace(layer,map_chkey_hist_expected_layer);
+	    	map_chkey_hist_expected_layer.emplace(chankey,hist_expected_layer);
+	    	expected_MRDHits_layer.emplace(layer,map_chkey_hist_expected_layer);
 	    } else {
-		std::stringstream ss_expectedhist, ss_expectedhist_layer;
-		std::stringstream ss_layer, ss_layer_layer;
-		ss_expectedhist <<"expectedhits_layer"<<layer<<"_chkey"<<chankey;
-		ss_layer << "Expected Hits Layer "<<layer<<" Chkey "<<chankey;
-		TH1D *hist_expected = new TH1D(ss_expectedhist.str().c_str(),ss_layer.str().c_str(),50,layermin,layermax);
-		if (orientation == 0) hist_expected->GetXaxis()->SetTitle("y [m]");
-		else hist_expected->GetXaxis()->SetTitle("x [m]");
-		expected_MRDHits.at(layer).emplace(chankey,hist_expected);	
-		ss_expectedhist_layer <<"expectedhits_wholelayer"<<layer<<"_chkey"<<chankey;
-		ss_layer_layer << "Expected Hits Whole Layer "<<layer<<" Chkey "<<chankey;
-		TH1D *hist_expected_layer = new TH1D(ss_expectedhist_layer.str().c_str(),ss_layer_layer.str().c_str(),200,-extents[layer],extents[layer]);
-		if (orientation == 0) hist_expected_layer->GetXaxis()->SetTitle("y [m]");
-		else hist_expected_layer->GetXaxis()->SetTitle("x [m]");
-		expected_MRDHits_layer.at(layer).emplace(chankey,hist_expected_layer);	
+	    	std::stringstream ss_expectedhist, ss_expectedhist_layer;
+	    	std::stringstream ss_layer, ss_layer_layer;
+	    	ss_expectedhist <<"expectedhits_layer"<<layer<<"_chkey"<<chankey;
+	    	ss_layer << "Expected Hits Layer "<<layer<<" Chkey "<<chankey;
+	    	TH1D *hist_expected = new TH1D(ss_expectedhist.str().c_str(),ss_layer.str().c_str(),50,layermin,layermax);
+	    	if (orientation == 0) hist_expected->GetXaxis()->SetTitle("y [m]");
+	    	else hist_expected->GetXaxis()->SetTitle("x [m]");
+	    	expected_MRDHits.at(layer).emplace(chankey,hist_expected);	
+	    	ss_expectedhist_layer <<"expectedhits_wholelayer"<<layer<<"_chkey"<<chankey;
+	    	ss_layer_layer << "Expected Hits Whole Layer "<<layer<<" Chkey "<<chankey;
+	    	TH1D *hist_expected_layer = new TH1D(ss_expectedhist_layer.str().c_str(),ss_layer_layer.str().c_str(),200,-extents[layer],extents[layer]);
+	    	if (orientation == 0) hist_expected_layer->GetXaxis()->SetTitle("y [m]");
+	    	else hist_expected_layer->GetXaxis()->SetTitle("x [m]");
+	    	expected_MRDHits_layer.at(layer).emplace(chankey,hist_expected_layer);	
 	    }
 	    if (observed_MRDHits.count(layer)==0) {
 	    	std::stringstream ss_observedhist, ss_observedhist_layer;
@@ -116,16 +116,16 @@ bool MrdPaddleEfficiencyPreparer::Initialise(std::string configfile, DataModel &
 	    	ss_observedhist << "observedhits_layer"<<layer<<"_chkey"<<chankey;
 	    	ss_layer <<"Observed Hits Layer "<<layer<<" Chkey "<<chankey;
 	    	TH1D *hist_observed = new TH1D(ss_observedhist.str().c_str(),ss_layer.str().c_str(),50,layermin,layermax);
-		if (orientation == 0) hist_observed->GetXaxis()->SetTitle("y [m]");
-		else hist_observed->GetXaxis()->SetTitle("x [m]");
+	    	if (orientation == 0) hist_observed->GetXaxis()->SetTitle("y [m]");
+	    	else hist_observed->GetXaxis()->SetTitle("x [m]");
 	    	std::map<unsigned long, TH1D*> map_chkey_hist_observed;
 	    	map_chkey_hist_observed.emplace(chankey,hist_observed);
 	    	observed_MRDHits.emplace(layer,map_chkey_hist_observed);
 	    	ss_observedhist_layer << "observedhits_wholelayer"<<layer<<"_chkey"<<chankey;
 	    	ss_layer_layer <<"Observed Hits Whole Layer "<<layer<<" Chkey "<<chankey;
 	    	TH1D *hist_observed_layer = new TH1D(ss_observedhist_layer.str().c_str(),ss_layer_layer.str().c_str(),200,-extents[layer],extents[layer]);
-		if (orientation == 0) hist_observed_layer->GetXaxis()->SetTitle("y [m]");
-		else hist_observed_layer->GetXaxis()->SetTitle("x [m]");
+	    	if (orientation == 0) hist_observed_layer->GetXaxis()->SetTitle("y [m]");
+	    	else hist_observed_layer->GetXaxis()->SetTitle("x [m]");
 	    	std::map<unsigned long, TH1D*> map_chkey_hist_observed_layer;
 	    	map_chkey_hist_observed_layer.emplace(chankey,hist_observed_layer);
 	    	observed_MRDHits_layer.emplace(layer,map_chkey_hist_observed_layer);
@@ -135,14 +135,14 @@ bool MrdPaddleEfficiencyPreparer::Initialise(std::string configfile, DataModel &
 	    	ss_observedhist << "observedhits_layer"<<layer<<"_chkey"<<chankey;
 	    	ss_layer <<"Observed Hits Layer "<<layer<<" Chkey "<<chankey;
 	    	TH1D *hist_observed = new TH1D(ss_observedhist.str().c_str(),ss_layer.str().c_str(),50,layermin,layermax);
-		if (orientation == 0) hist_observed->GetXaxis()->SetTitle("y [m]");
-		else hist_observed->GetXaxis()->SetTitle("x [m]");
+	    	if (orientation == 0) hist_observed->GetXaxis()->SetTitle("y [m]");
+	    	else hist_observed->GetXaxis()->SetTitle("x [m]");
 	    	observed_MRDHits.at(layer).emplace(chankey,hist_observed);
 	    	ss_observedhist_layer << "observedhits_wholelayer"<<layer<<"_chkey"<<chankey;
 	    	ss_layer_layer <<"Observed Hits Whole Layer "<<layer<<" Chkey "<<chankey;
 	    	TH1D *hist_observed_layer = new TH1D(ss_observedhist_layer.str().c_str(),ss_layer_layer.str().c_str(),200,-extents[layer],extents[layer]);
-		if (orientation == 0) hist_observed_layer->GetXaxis()->SetTitle("y [m]");
-		else hist_observed_layer->GetXaxis()->SetTitle("x [m]");
+	    	if (orientation == 0) hist_observed_layer->GetXaxis()->SetTitle("y [m]");
+	    	else hist_observed_layer->GetXaxis()->SetTitle("x [m]");
 	    	observed_MRDHits_layer.at(layer).emplace(chankey,hist_observed_layer);
 	    }
 
@@ -156,10 +156,10 @@ bool MrdPaddleEfficiencyPreparer::Initialise(std::string configfile, DataModel &
 	//hist_timediff = new TH1F("hist_timediff","Timediff first & last layer",2000,-2000,2000);
 	tree_trackfit = new TTree("tree_trackfit","tree_trackfit");
 	tree_trackfit->Branch("RunNum",&RunNumber);
-        tree_trackfit->Branch("EvNum",&EventNumber);
-        tree_trackfit->Branch("MRDTriggerType",&MRDTriggertype);
+	tree_trackfit->Branch("EvNum",&EventNumber);
+	tree_trackfit->Branch("MRDTriggerType",&MRDTriggertype);
 	tree_trackfit->Branch("NumMrdTracks",&numtracksinev);
-        tree_trackfit->Branch("MrdTrackID",&MrdTrackID);
+	tree_trackfit->Branch("MrdTrackID",&MrdTrackID);
 	tree_trackfit->Branch("NPMTsHit",&NPMTsHit);
 	tree_trackfit->Branch("NLayersHit",&NLayersHit);
 	tree_trackfit->Branch("StartVertexX",&StartVertexX);
@@ -178,7 +178,7 @@ bool MrdPaddleEfficiencyPreparer::Initialise(std::string configfile, DataModel &
 	m_data->CStore.Get("channelkey_to_mrdpmtid",channelkey_to_mrdpmtid);
 	m_data->CStore.Get("mrd_tubeid_to_channelkey",mrdpmtid_to_channelkey);
 
-        numtracksinev = 0;
+	numtracksinev = 0;
 
 	return true;
 
@@ -202,25 +202,25 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 		m_data->Stores["MRDTracks"]->Get("NumMrdTracks",numtracksinev);
 
 		if(verbosity>2) std::cout<<"MrdPaddleEfficiencyPreparer tool: Event "<<EventNumber<<" had "<<numtracksinev<<" tracks in "<<numsubevs<<" subevents"<<endl;
-			
+
 		// Only look at events with a single track (cut may be relaxed in the future)		
 
-        	MrdTrackID=-1;
-        	NPMTsHit=-1;
-        	NLayersHit=-1;
-        	StartVertexX=-999;
-        	StartVertexY=-999;
-        	StartVertexZ=-999;
-        	StopVertexX=-999;
-        	StopVertexY=-999;
-        	StopVertexZ=-999;
-        	IsThrough=-1;
-        	MissingChannel->clear();
-        	ExpectedChannel->clear();
-        	NumMissingChannel=-1;
+		MrdTrackID=-1;
+		NPMTsHit=-1;
+		NLayersHit=-1;
+		StartVertexX=-999;
+		StartVertexY=-999;
+		StartVertexZ=-999;
+		StopVertexX=-999;
+		StopVertexY=-999;
+		StopVertexZ=-999;
+		IsThrough=-1;
+		MissingChannel->clear();
+		ExpectedChannel->clear();
+		NumMissingChannel=-1;
 		MissingLayer->clear();
 		NumMissingLayer=-1;	
-	
+
 		if (numtracksinev == 1) {
 
 			// Get reconstructed tracks
@@ -307,6 +307,14 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 						
 						// Exclude first and layer from efficiency determination
 						double x_layer, y_layer;
+
+						double dirZ = StopVertex.Z()-StartVertex.Z();
+
+                        if (fabs(DirZ) < 0.001) 
+						{
+							Log("MrdPaddleEfficiencyPreparer tool: StartVertex = EndVertex! Track was not fitted well",v_error,verbosity);
+							continue;
+						}
 						
 						if (i_layer == 0)
 						{
@@ -319,157 +327,157 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 							y_layer = StopVertex.Y();
 						}
 
-							FindPaddleIntersection(StartVertex, StopVertex, x_layer, y_layer, zLayers.at(i_layer));
-							if (verbosity > 2) std::cout <<"MrdPaddleEfficiencyPreparer tool: FindPaddleIntersection found x_layer = "<<x_layer<<"& y_layer = "<<y_layer<<" for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
+						FindPaddleIntersection(StartVertex, StopVertex, x_layer, y_layer, zLayers.at(i_layer));
+						if (verbosity > 2) std::cout <<"MrdPaddleEfficiencyPreparer tool: FindPaddleIntersection found x_layer = "<<x_layer<<"& y_layer = "<<y_layer<<" for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
 
-							unsigned long hit_chankey=99999;
-							FindPaddleChankey(x_layer, y_layer, i_layer,hit_chankey);
-							if (hit_chankey == 99999) {
-								std::cout <<"FindMrdPaddleEfficiencyPreparer: Did not find paddle with the desired intersection properties for this MRD layer, abort. "<<std::endl;
-								continue;
+						unsigned long hit_chankey=99999;
+						FindPaddleChankey(x_layer, y_layer, i_layer,hit_chankey);
+						if (hit_chankey == 99999) {
+							std::cout <<"FindMrdPaddleEfficiencyPreparer: Did not find paddle with the desired intersection properties for this MRD layer, abort. "<<std::endl;
+							continue;
+						}
+
+						if (orientationLayers.at(i_layer) == 0) {
+							expected_MRDHits.at(i_layer).at(hit_chankey)->Fill(y_layer);
+							expected_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(y_layer);
+							ExpectedChannel->push_back(hit_chankey);
+							int half_expected_ch = map_chkey_half[hit_chankey];
+							int mrdid;
+							if (isData) mrdid = channelkey_to_mrdpmtid[hit_chankey];
+							else mrdid = channelkey_to_mrdpmtid[hit_chankey]-1;
+							if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end()) {
+								observed_MRDHits.at(i_layer).at(hit_chankey)->Fill(y_layer);
+								observed_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(y_layer);
+
+							} else {
+								MissingChannel->push_back(hit_chankey);
+								MissingLayer->push_back(i_layer+1);
 							}
-	
-							if (orientationLayers.at(i_layer) == 0) {
-								expected_MRDHits.at(i_layer).at(hit_chankey)->Fill(y_layer);
-								expected_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(y_layer);
-								ExpectedChannel->push_back(hit_chankey);
-								int half_expected_ch = map_chkey_half[hit_chankey];
-								int mrdid;
-								if (isData) mrdid = channelkey_to_mrdpmtid[hit_chankey];
-								else mrdid = channelkey_to_mrdpmtid[hit_chankey]-1;
-								if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end()) {
-									observed_MRDHits.at(i_layer).at(hit_chankey)->Fill(y_layer);
-									observed_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(y_layer);
-									
-								} else {
-									MissingChannel->push_back(hit_chankey);
-									MissingLayer->push_back(i_layer+1);
-								}
-								for (unsigned long i = channels_start[i_layer]; i < channels_start[i_layer+1]; i++){
-									int half_channel = map_chkey_half[i];
-									if (i == hit_chankey) continue;
-									if (half_channel == half_expected_ch){
-										if (isData) mrdid = channelkey_to_mrdpmtid[i];
-                                                                		else mrdid = channelkey_to_mrdpmtid[i]-1;
-										expected_MRDHits_layer.at(i_layer).at(i)->Fill(y_layer);
-										if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)==PMTsHit.end()) {
+							for (unsigned long i = channels_start[i_layer]; i < channels_start[i_layer+1]; i++){
+								int half_channel = map_chkey_half[i];
+								if (i == hit_chankey) continue;
+								if (half_channel == half_expected_ch){
+									if (isData) mrdid = channelkey_to_mrdpmtid[i];
+									else mrdid = channelkey_to_mrdpmtid[i]-1;
+									expected_MRDHits_layer.at(i_layer).at(i)->Fill(y_layer);
+									if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)==PMTsHit.end()) {
                                                                 		if (fabs(i-hit_chankey)<=1 || fabs(hit_chankey-i) <=1){ //Only look at neighboring channels
-										if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end())  observed_MRDHits_layer.at(i_layer).at(i)->Fill(y_layer);		}								
-										}
-									}
-								}
-							}
-							else {
-								expected_MRDHits.at(i_layer).at(hit_chankey)->Fill(x_layer);
-								expected_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(x_layer);
-								ExpectedChannel->push_back(hit_chankey);
-								int half_expected_ch = map_chkey_half[hit_chankey];
-								int mrdid;
-								if (isData) mrdid = channelkey_to_mrdpmtid[hit_chankey];
-								else mrdid = channelkey_to_mrdpmtid[hit_chankey]-1;
-								if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end()){
-									observed_MRDHits.at(i_layer).at(hit_chankey)->Fill(x_layer);
-									observed_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(x_layer);
-								} else {
-									MissingChannel->push_back(hit_chankey);
-									MissingLayer->push_back(i_layer+1);
-
+                                                                			if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end())  observed_MRDHits_layer.at(i_layer).at(i)->Fill(y_layer);		}								
+                                                                		}
+                                                                	}
                                                                 }
-								for (unsigned long i = channels_start[i_layer]; i < channels_start[i_layer+1]; i++){
-									int half_channel = map_chkey_half[i];
-									if (i==hit_chankey) continue;
-									if (half_channel == half_expected_ch){
-										if (isData) mrdid = channelkey_to_mrdpmtid[i];
-                                                                		else mrdid = channelkey_to_mrdpmtid[i]-1;
-										expected_MRDHits_layer.at(i_layer).at(i)->Fill(x_layer);
-										if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)==PMTsHit.end()){
-                                                                		if (fabs(i-hit_chankey)<=1 || fabs(hit_chankey-i) <=1){
-										if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end())  observed_MRDHits_layer.at(i_layer).at(i)->Fill(x_layer);										
-										}
-									}
-									}
-								}
-							}
-					}
-				}
-			}
-			NumMissingChannel = (int) MissingChannel->size();
-			NumMissingLayer = (int) MissingLayer->size();
-			tree_trackfit->Fill();
-		} else {
+                                                            }
+                                                            else {
+                                                            	expected_MRDHits.at(i_layer).at(hit_chankey)->Fill(x_layer);
+                                                            	expected_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(x_layer);
+                                                            	ExpectedChannel->push_back(hit_chankey);
+                                                            	int half_expected_ch = map_chkey_half[hit_chankey];
+                                                            	int mrdid;
+                                                            	if (isData) mrdid = channelkey_to_mrdpmtid[hit_chankey];
+                                                            	else mrdid = channelkey_to_mrdpmtid[hit_chankey]-1;
+                                                            	if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end()){
+                                                            		observed_MRDHits.at(i_layer).at(hit_chankey)->Fill(x_layer);
+                                                            		observed_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(x_layer);
+                                                            	} else {
+                                                            		MissingChannel->push_back(hit_chankey);
+                                                            		MissingLayer->push_back(i_layer+1);
+
+                                                            	}
+                                                            	for (unsigned long i = channels_start[i_layer]; i < channels_start[i_layer+1]; i++){
+                                                            		int half_channel = map_chkey_half[i];
+                                                            		if (i==hit_chankey) continue;
+                                                            		if (half_channel == half_expected_ch){
+                                                            			if (isData) mrdid = channelkey_to_mrdpmtid[i];
+                                                            			else mrdid = channelkey_to_mrdpmtid[i]-1;
+                                                            			expected_MRDHits_layer.at(i_layer).at(i)->Fill(x_layer);
+                                                            			if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)==PMTsHit.end()){
+                                                            				if (fabs(i-hit_chankey)<=1 || fabs(hit_chankey-i) <=1){
+                                                            					if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end())  observed_MRDHits_layer.at(i_layer).at(i)->Fill(x_layer);										
+                                                            				}
+                                                            			}
+                                                            		}
+                                                            	}
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                NumMissingChannel = (int) MissingChannel->size();
+                                                NumMissingLayer = (int) MissingLayer->size();
+                                                tree_trackfit->Fill();
+                                            } else {
 			//tree_trackfit->Fill();
-		}
-	} 
+                                            }
+                                        } 
 
-	return true;
+                                        return true;
 
-}
+                                    }
 
-bool MrdPaddleEfficiencyPreparer::Finalise(){
+                                    bool MrdPaddleEfficiencyPreparer::Finalise(){
 
-	hist_file->cd();
+                                    	hist_file->cd();
 
-	hist_chankey->Write();
-	hist_nlayers->Write();
-        tree_trackfit->Write();
-	for (unsigned int i_layer = 0; i_layer < zLayers.size(); i_layer++){
-		for (unsigned int i_ch = 0; i_ch < channelsLayers.at(i_layer).size(); i_ch++){
-			unsigned long temp_chkey = channelsLayers.at(i_layer).at(i_ch);
-			observed_MRDHits.at(i_layer).at(temp_chkey)->Write();
-			expected_MRDHits.at(i_layer).at(temp_chkey)->Write();
-			observed_MRDHits_layer.at(i_layer).at(temp_chkey)->Write();
-			expected_MRDHits_layer.at(i_layer).at(temp_chkey)->Write();
-		}
-	}
+                                    	hist_chankey->Write();
+                                    	hist_nlayers->Write();
+                                    	tree_trackfit->Write();
+                                    	for (unsigned int i_layer = 0; i_layer < zLayers.size(); i_layer++){
+                                    		for (unsigned int i_ch = 0; i_ch < channelsLayers.at(i_layer).size(); i_ch++){
+                                    			unsigned long temp_chkey = channelsLayers.at(i_layer).at(i_ch);
+                                    			observed_MRDHits.at(i_layer).at(temp_chkey)->Write();
+                                    			expected_MRDHits.at(i_layer).at(temp_chkey)->Write();
+                                    			observed_MRDHits_layer.at(i_layer).at(temp_chkey)->Write();
+                                    			expected_MRDHits_layer.at(i_layer).at(temp_chkey)->Write();
+                                    		}
+                                    	}
 
-	hist_file->Close();
-	delete hist_file;
+                                    	hist_file->Close();
+                                    	delete hist_file;
 
-	return true;
+                                    	return true;
 
 
-}
+                                    }
 
-bool MrdPaddleEfficiencyPreparer::FindPaddleIntersection(Position startpos, Position endpos, double &x, double &y, double z){
+                                    bool MrdPaddleEfficiencyPreparer::FindPaddleIntersection(Position startpos, Position endpos, double &x, double &y, double z){
 
-	double DirX = endpos.X()-startpos.X();
-	double DirY = endpos.Y()-startpos.Y();
-	double DirZ = endpos.Z()-startpos.Z();
+                                    	double DirX = endpos.X()-startpos.X();
+                                    	double DirY = endpos.Y()-startpos.Y();
+                                    	double DirZ = endpos.Z()-startpos.Z();
 
-	if (fabs(DirZ) < 0.001) Log("MrdPaddleEfficiencyPreparer tool: StartVertex = EndVertex! Track was not fitted well",v_error,verbosity);
+                                    	if (fabs(DirZ) < 0.001) Log("MrdPaddleEfficiencyPreparer tool: StartVertex = EndVertex! Track was not fitted well",v_error,verbosity);
 
-	double frac = (z - startpos.Z())/DirZ;
+                                    	double frac = (z - startpos.Z())/DirZ;
 
-	x = startpos.X()+frac*DirX;
-	y = startpos.Y()+frac*DirY;
+                                    	x = startpos.X()+frac*DirX;
+                                    	y = startpos.Y()+frac*DirY;
 
-	return true;
+                                    	return true;
 
-}
+                                    }
 
-bool MrdPaddleEfficiencyPreparer::FindPaddleChankey(double x, double y, int layer, unsigned long &chankey){
+                                    bool MrdPaddleEfficiencyPreparer::FindPaddleChankey(double x, double y, int layer, unsigned long &chankey){
 
-	bool found_chankey = false;
-	for (unsigned int i_channel = 0; i_channel < channelsLayers.at(layer).size(); i_channel++){
+                                    	bool found_chankey = false;
+                                    	for (unsigned int i_channel = 0; i_channel < channelsLayers.at(layer).size(); i_channel++){
 
-		if (found_chankey) break;
+                                    		if (found_chankey) break;
 
-		unsigned long chankey_tmp = channelsLayers.at(layer).at(i_channel);
-		Detector *mrdpmt = geom->ChannelToDetector(chankey_tmp);
-		unsigned long detkey = mrdpmt->GetDetectorID();
-		Paddle *mrdpaddle = (Paddle*) geom->GetDetectorPaddle(detkey);
-		double xmin = mrdpaddle->GetXmin();
-		double xmax = mrdpaddle->GetXmax();
-		double ymin = mrdpaddle->GetYmin();
-		double ymax = mrdpaddle->GetYmax();
+                                    		unsigned long chankey_tmp = channelsLayers.at(layer).at(i_channel);
+                                    		Detector *mrdpmt = geom->ChannelToDetector(chankey_tmp);
+                                    		unsigned long detkey = mrdpmt->GetDetectorID();
+                                    		Paddle *mrdpaddle = (Paddle*) geom->GetDetectorPaddle(detkey);
+                                    		double xmin = mrdpaddle->GetXmin();
+                                    		double xmax = mrdpaddle->GetXmax();
+                                    		double ymin = mrdpaddle->GetYmin();
+                                    		double ymax = mrdpaddle->GetYmax();
 
 		//Check if expected hit was within the channel or not
-		if (xmin <= x && xmax >= x && ymin <= y && ymax >= y){
-			chankey = chankey_tmp;
-			found_chankey = true;
-		}
-	}	
+                                    		if (xmin <= x && xmax >= x && ymin <= y && ymax >= y){
+                                    			chankey = chankey_tmp;
+                                    			found_chankey = true;
+                                    		}
+                                    	}	
 
-	return true;
+                                    	return true;
 
-} 
+                                    } 
