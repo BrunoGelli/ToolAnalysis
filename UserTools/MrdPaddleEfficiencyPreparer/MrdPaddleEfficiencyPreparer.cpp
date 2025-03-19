@@ -310,7 +310,7 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 
 						double dirZ = StopVertex.Z()-StartVertex.Z();
 
-                        if (fabs(DirZ) < 0.001) 
+                        if (fabs(dirZ) < 0.001) 
 						{
 							Log("MrdPaddleEfficiencyPreparer tool: StartVertex = EndVertex! Track was not fitted well",v_error,verbosity);
 							continue;
