@@ -307,8 +307,9 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 						
 						// Exclude first and layer from efficiency determination
 						double x_layer, y_layer;
-
 						double dirZ = StopVertex.Z()-StartVertex.Z();
+						unsigned long hit_chankey=99999;
+
 
                         if (fabs(dirZ) < 0.001) 
 						{
@@ -321,24 +322,22 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 							x_layer = StartVertex.X();
 							y_layer = StartVertex.Y();
 							if (verbosity > 2) std::cout <<"MrdPaddleEfficiencyPreparer tool: FIRST LAYER - for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
-
+							hit_chankey = 0;
 						}
 						else if (i_layer == int(zLayers.size()) -1)
 						{
 							x_layer = StopVertex.X();
 							y_layer = StopVertex.Y();
 							if (verbosity > 2) std::cout <<"MrdPaddleEfficiencyPreparer tool: LAST LAYER - for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
-
+							hit_chankey = 300;
 						}
 						else
 						{
 							FindPaddleIntersection(StartVertex, StopVertex, x_layer, y_layer, zLayers.at(i_layer));
 							if (verbosity > 2) std::cout <<"MrdPaddleEfficiencyPreparer tool: FindPaddleIntersection found x_layer = "<<x_layer<<"& y_layer = "<<y_layer<<" for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
-
+							FindPaddleChankey(x_layer, y_layer, i_layer, hit_chankey);
 						}
 
-						unsigned long hit_chankey=99999;
-						FindPaddleChankey(x_layer, y_layer, i_layer,hit_chankey);
 						if (hit_chankey == 99999) {
 							std::cout <<"FindMrdPaddleEfficiencyPreparer: Did not find paddle with the desired intersection properties for this MRD layer, abort. "<<std::endl;
 							continue;
@@ -451,7 +450,7 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
                                     	double DirY = endpos.Y()-startpos.Y();
                                     	double DirZ = endpos.Z()-startpos.Z();
 
-                                    	if (fabs(DirZ) < 0.001) Log("MrdPaddleEfficiencyPreparer tool: StartVertex = EndVertex! Track was not fitted well",v_error,verbosity);
+	                                    	if (fabs(DirZ) < 0.001) Log("MrdPaddleEfficiencyPreparer tool: StartVertex = EndVertex! Track was not fitted well",v_error,verbosity);
 
                                     	double frac = (z - startpos.Z())/DirZ;
 
