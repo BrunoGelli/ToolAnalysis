@@ -320,15 +320,22 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 						{
 							x_layer = StartVertex.X();
 							y_layer = StartVertex.Y();
+							if (verbosity > 2) std::cout <<"MrdPaddleEfficiencyPreparer tool: FIRST LAYER - for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
+
 						}
-						if (i_layer == int(zLayers.size()) -1)
+						else if (i_layer == int(zLayers.size()) -1)
 						{
 							x_layer = StopVertex.X();
 							y_layer = StopVertex.Y();
-						}
+							if (verbosity > 2) std::cout <<"MrdPaddleEfficiencyPreparer tool: LAST LAYER - for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
 
-						FindPaddleIntersection(StartVertex, StopVertex, x_layer, y_layer, zLayers.at(i_layer));
-						if (verbosity > 2) std::cout <<"MrdPaddleEfficiencyPreparer tool: FindPaddleIntersection found x_layer = "<<x_layer<<"& y_layer = "<<y_layer<<" for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
+						}
+						else
+						{
+							FindPaddleIntersection(StartVertex, StopVertex, x_layer, y_layer, zLayers.at(i_layer));
+							if (verbosity > 2) std::cout <<"MrdPaddleEfficiencyPreparer tool: FindPaddleIntersection found x_layer = "<<x_layer<<"& y_layer = "<<y_layer<<" for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
+
+						}
 
 						unsigned long hit_chankey=99999;
 						FindPaddleChankey(x_layer, y_layer, i_layer,hit_chankey);
