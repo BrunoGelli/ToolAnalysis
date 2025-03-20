@@ -356,13 +356,13 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 
 						if (orientationLayers.at(i_layer) == 0) 
 						{
-							cout << "enter the if" << endl;
+							// cout << "enter the if" << endl;
 							expected_MRDHits.at(i_layer).at(hit_chankey)->Fill(y_layer);
-							cout << "did the first fill" << endl;
+							// cout << "did the first fill" << endl;
 							expected_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(y_layer);
-							cout << "did the second fill" << endl;
+							// cout << "did the second fill" << endl;
 							ExpectedChannel->push_back(hit_chankey);
-							cout << "did the third fill" << endl;
+							// cout << "did the third fill" << endl;
 
 							int half_expected_ch = map_chkey_half[hit_chankey];
 							int mrdid;
@@ -374,18 +374,18 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 							{
 								observed_MRDHits.at(i_layer).at(hit_chankey)->Fill(y_layer);
 								observed_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(y_layer);
-								cout << "01 dioasdid the third fill" << endl;
+								// cout << "01 dioasdid the third fill" << endl;
 
 							} 
 							else 
 							{
-								cout << "02 dioasdid the third fill" << endl;
+								// cout << "02 dioasdid the third fill" << endl;
 
 								MissingChannel->push_back(hit_chankey);
 								MissingLayer->push_back(i_layer+1);
 							}
 							
-							cout << "i think it is failing next " << i_layer << " " << channels_start[i_layer] << " " << channels_start[i_layer+1] << endl;
+							// cout << "i think it is failing next " << i_layer << " " << channels_start[i_layer] << " " << channels_start[i_layer+1] << endl;
 
 
 							for (unsigned long i = channels_start[i_layer]; i < channels_start[i_layer+1]; i++)
@@ -410,6 +410,7 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
                                 }
                             }
                         }
+                        
                         else 
                         {
                         	expected_MRDHits.at(i_layer).at(hit_chankey)->Fill(x_layer);
@@ -457,7 +458,7 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
                         }
 
 
-                        
+
                     }
                 }
 			}
