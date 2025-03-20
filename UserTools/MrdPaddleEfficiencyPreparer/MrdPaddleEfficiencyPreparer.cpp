@@ -194,7 +194,8 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 
 	// In case of a cosmic event, use the fitted track for an efficiency calculation
 
-	if (true){	//previously condition for cosmic event, now removed to also investigate beam events
+	if (true)
+	{	//previously condition for cosmic event, now removed to also investigate beam events
 		
 		// Get MRD track information from MRDTracks BoostStore
 
@@ -221,15 +222,16 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 		MissingLayer->clear();
 		NumMissingLayer=-1;	
 
-		if (numtracksinev == 1) {
-
+		if (numtracksinev == 1) 
+		{
 			// Get reconstructed tracks
 
 			m_data->Stores["MRDTracks"]->Get("MRDTracks",theMrdTracks);
 
 			// Loop over reconstructed tracks
 			
-			for(int tracki=0; tracki<numtracksinev; tracki++){
+			for(int tracki=0; tracki<numtracksinev; tracki++)
+			{
 				
 				BoostStore* thisTrackAsBoostStore = &(theMrdTracks->at(tracki));
 				PMTsHit.clear();
@@ -263,12 +265,14 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 
 				hist_nlayers->Fill(NLayersHit);
 
-				if (usetruetrack){
+				if (usetruetrack)
+				{
 					std::vector<std::pair<Position,Position>> truetrackvertices;
 					std::vector<Int_t> truetrackpdgs;
 					m_data->CStore.Get("TrueTrackVertices",truetrackvertices);
 					m_data->CStore.Get("TrueTrackPDGs",truetrackpdgs);
-					for (int i=0; i< (int) truetrackvertices.size(); i++){
+					for (int i=0; i< (int) truetrackvertices.size(); i++)
+					{
 						if (i==0) continue; 	//first vertex is not saved correctly
 						Position startvertex = truetrackvertices.at(i).first;
 						Position stopvertex = truetrackvertices.at(i).second;
@@ -287,9 +291,11 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 
 				// Minor selection cuts to only select well fit tracks
 
-				if (PMTsHit.size() < 50 && long_track){
+				if (PMTsHit.size() < 50 && long_track)
+				{
 
-					for (int i_pmt=0; i_pmt < (int) PMTsHit.size(); i_pmt++){
+					for (int i_pmt=0; i_pmt < (int) PMTsHit.size(); i_pmt++)
+					{
 						int mrdid = PMTsHit.at(i_pmt);
 						unsigned long chankey = mrdpmtid_to_channelkey[mrdid];
 						hist_chankey->Fill(chankey);
@@ -303,7 +309,8 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 						}*/
 					}
 
-					for (int i_layer = 0; i_layer < (int) zLayers.size(); i_layer++){
+					for (int i_layer = 0; i_layer < (int) zLayers.size(); i_layer++)
+					{
 						
 						// Exclude first and layer from efficiency determination
 						double x_layer, y_layer;
@@ -349,146 +356,185 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 
 						if (orientationLayers.at(i_layer) == 0) 
 						{
+							cout << "enter ther if" << endl;
 							expected_MRDHits.at(i_layer).at(hit_chankey)->Fill(y_layer);
+							cout << "did the first fill" << endl;
 							expected_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(y_layer);
+							cout << "did the second fill" << endl;
 							ExpectedChannel->push_back(hit_chankey);
+							cout << "did the third fill" << endl;
+
 							int half_expected_ch = map_chkey_half[hit_chankey];
 							int mrdid;
+
 							if (isData) mrdid = channelkey_to_mrdpmtid[hit_chankey];
 							else mrdid = channelkey_to_mrdpmtid[hit_chankey]-1;
-							if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end()) {
+
+							if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end()) 
+							{
 								observed_MRDHits.at(i_layer).at(hit_chankey)->Fill(y_layer);
 								observed_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(y_layer);
+								cout << "01 dioasdid the third fill" << endl;
 
-							} else {
+							} 
+							else 
+							{
+								cout << "02 dioasdid the third fill" << endl;
+
 								MissingChannel->push_back(hit_chankey);
 								MissingLayer->push_back(i_layer+1);
 							}
-							for (unsigned long i = channels_start[i_layer]; i < channels_start[i_layer+1]; i++){
+
+							for (unsigned long i = channels_start[i_layer]; i < channels_start[i_layer+1]; i++)
+							{
 								int half_channel = map_chkey_half[i];
 								if (i == hit_chankey) continue;
-								if (half_channel == half_expected_ch){
+								if (half_channel == half_expected_ch)
+								{
 									if (isData) mrdid = channelkey_to_mrdpmtid[i];
 									else mrdid = channelkey_to_mrdpmtid[i]-1;
 									expected_MRDHits_layer.at(i_layer).at(i)->Fill(y_layer);
-									if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)==PMTsHit.end()) {
-                                                                		if (fabs(i-hit_chankey)<=1 || fabs(hit_chankey-i) <=1){ //Only look at neighboring channels
-                                                                			if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end())  observed_MRDHits_layer.at(i_layer).at(i)->Fill(y_layer);		}								
-                                                                		}
-                                                                	}
-                                                                }
-                                                            }
-                                                            else {
-                                                            	expected_MRDHits.at(i_layer).at(hit_chankey)->Fill(x_layer);
-                                                            	expected_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(x_layer);
-                                                            	ExpectedChannel->push_back(hit_chankey);
-                                                            	int half_expected_ch = map_chkey_half[hit_chankey];
-                                                            	int mrdid;
-                                                            	if (isData) mrdid = channelkey_to_mrdpmtid[hit_chankey];
-                                                            	else mrdid = channelkey_to_mrdpmtid[hit_chankey]-1;
-                                                            	if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end()){
-                                                            		observed_MRDHits.at(i_layer).at(hit_chankey)->Fill(x_layer);
-                                                            		observed_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(x_layer);
-                                                            	} else {
-                                                            		MissingChannel->push_back(hit_chankey);
-                                                            		MissingLayer->push_back(i_layer+1);
+									if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)==PMTsHit.end()) 
+									{
+                                        if (fabs(i-hit_chankey)<=1 || fabs(hit_chankey-i) <=1)
+                                        { //Only look at neighboring channels
+											if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end())  observed_MRDHits_layer.at(i_layer).at(i)->Fill(y_layer);		
+                                        }								
+                                    }
+                                }
+                            }
+                        }
+                        else 
+                        {
+                        	expected_MRDHits.at(i_layer).at(hit_chankey)->Fill(x_layer);
+                        	expected_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(x_layer);
+                        	ExpectedChannel->push_back(hit_chankey);
+                        	int half_expected_ch = map_chkey_half[hit_chankey];
+                        	int mrdid;
 
-                                                            	}
-                                                            	for (unsigned long i = channels_start[i_layer]; i < channels_start[i_layer+1]; i++){
-                                                            		int half_channel = map_chkey_half[i];
-                                                            		if (i==hit_chankey) continue;
-                                                            		if (half_channel == half_expected_ch){
-                                                            			if (isData) mrdid = channelkey_to_mrdpmtid[i];
-                                                            			else mrdid = channelkey_to_mrdpmtid[i]-1;
-                                                            			expected_MRDHits_layer.at(i_layer).at(i)->Fill(x_layer);
-                                                            			if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)==PMTsHit.end()){
-                                                            				if (fabs(i-hit_chankey)<=1 || fabs(hit_chankey-i) <=1){
-                                                            					if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end())  observed_MRDHits_layer.at(i_layer).at(i)->Fill(x_layer);										
-                                                            				}
-                                                            			}
-                                                            		}
-                                                            	}
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                NumMissingChannel = (int) MissingChannel->size();
-                                                NumMissingLayer = (int) MissingLayer->size();
-                                                tree_trackfit->Fill();
-                                            } else {
+                        	if (isData) mrdid = channelkey_to_mrdpmtid[hit_chankey];
+                        	else mrdid = channelkey_to_mrdpmtid[hit_chankey]-1;
+                        	
+                        	if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end())
+                        	{
+                        		observed_MRDHits.at(i_layer).at(hit_chankey)->Fill(x_layer);
+                        		observed_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(x_layer);
+                        	} 
+                        	else 
+                        	{
+                        		MissingChannel->push_back(hit_chankey);
+                        		MissingLayer->push_back(i_layer+1);
+                            }
+                        	for (unsigned long i = channels_start[i_layer]; i < channels_start[i_layer+1]; i++)
+                        	{
+                        		
+                        		int half_channel = map_chkey_half[i];
+                        		
+                        		if (i==hit_chankey) continue;
+                        		
+                        		if (half_channel == half_expected_ch)
+                        		{
+                        			if (isData) mrdid = channelkey_to_mrdpmtid[i];
+                        			else mrdid = channelkey_to_mrdpmtid[i]-1;
+
+                        			expected_MRDHits_layer.at(i_layer).at(i)->Fill(x_layer);
+                        			
+                        			if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)==PMTsHit.end())
+                        			{
+                        				if (fabs(i-hit_chankey)<=1 || fabs(hit_chankey-i) <=1)
+                        				{
+                        					if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end())  observed_MRDHits_layer.at(i_layer).at(i)->Fill(x_layer);										
+                        				}
+                        			}
+                        		}
+                        	}
+                        }
+                    }
+                }
+			}
+			
+			NumMissingChannel = (int) MissingChannel->size();
+			NumMissingLayer = (int) MissingLayer->size();
+			tree_trackfit->Fill();
+			
+		} 
+		else 
+		{
 			//tree_trackfit->Fill();
-                                            }
-                                        } 
+		}
+	} 
+	return true;
+}
 
-                                        return true;
+bool MrdPaddleEfficiencyPreparer::Finalise()
+{
 
-                                    }
+	hist_file->cd();
 
-                                    bool MrdPaddleEfficiencyPreparer::Finalise(){
+	hist_chankey->Write();
+	hist_nlayers->Write();
+	tree_trackfit->Write();
+	for (unsigned int i_layer = 0; i_layer < zLayers.size(); i_layer++)
+	{
+		for (unsigned int i_ch = 0; i_ch < channelsLayers.at(i_layer).size(); i_ch++)
+		{
+			unsigned long temp_chkey = channelsLayers.at(i_layer).at(i_ch);
+			observed_MRDHits.at(i_layer).at(temp_chkey)->Write();
+			expected_MRDHits.at(i_layer).at(temp_chkey)->Write();
+			observed_MRDHits_layer.at(i_layer).at(temp_chkey)->Write();
+			expected_MRDHits_layer.at(i_layer).at(temp_chkey)->Write();
+		}
+	}
 
-                                    	hist_file->cd();
+	hist_file->Close();
+	delete hist_file;
+	return true;
+}
 
-                                    	hist_chankey->Write();
-                                    	hist_nlayers->Write();
-                                    	tree_trackfit->Write();
-                                    	for (unsigned int i_layer = 0; i_layer < zLayers.size(); i_layer++){
-                                    		for (unsigned int i_ch = 0; i_ch < channelsLayers.at(i_layer).size(); i_ch++){
-                                    			unsigned long temp_chkey = channelsLayers.at(i_layer).at(i_ch);
-                                    			observed_MRDHits.at(i_layer).at(temp_chkey)->Write();
-                                    			expected_MRDHits.at(i_layer).at(temp_chkey)->Write();
-                                    			observed_MRDHits_layer.at(i_layer).at(temp_chkey)->Write();
-                                    			expected_MRDHits_layer.at(i_layer).at(temp_chkey)->Write();
-                                    		}
-                                    	}
+bool MrdPaddleEfficiencyPreparer::FindPaddleIntersection(Position startpos, Position endpos, double &x, double &y, double z)
+{
 
-                                    	hist_file->Close();
-                                    	delete hist_file;
+	double DirX = endpos.X()-startpos.X();
+	double DirY = endpos.Y()-startpos.Y();
+	double DirZ = endpos.Z()-startpos.Z();
 
-                                    	return true;
+    	if (fabs(DirZ) < 0.001) Log("MrdPaddleEfficiencyPreparer tool: StartVertex = EndVertex! Track was not fitted well",v_error,verbosity);
 
+	double frac = (z - startpos.Z())/DirZ;
 
-                                    }
+	x = startpos.X()+frac*DirX;
+	y = startpos.Y()+frac*DirY;
 
-                                    bool MrdPaddleEfficiencyPreparer::FindPaddleIntersection(Position startpos, Position endpos, double &x, double &y, double z){
+	return true;
 
-                                    	double DirX = endpos.X()-startpos.X();
-                                    	double DirY = endpos.Y()-startpos.Y();
-                                    	double DirZ = endpos.Z()-startpos.Z();
+}
 
-	                                    	if (fabs(DirZ) < 0.001) Log("MrdPaddleEfficiencyPreparer tool: StartVertex = EndVertex! Track was not fitted well",v_error,verbosity);
+bool MrdPaddleEfficiencyPreparer::FindPaddleChankey(double x, double y, int layer, unsigned long &chankey)
+{
 
-                                    	double frac = (z - startpos.Z())/DirZ;
+	bool found_chankey = false;
+	for (unsigned int i_channel = 0; i_channel < channelsLayers.at(layer).size(); i_channel++)
+	{
 
-                                    	x = startpos.X()+frac*DirX;
-                                    	y = startpos.Y()+frac*DirY;
+		if (found_chankey) break;
 
-                                    	return true;
-
-                                    }
-
-                                    bool MrdPaddleEfficiencyPreparer::FindPaddleChankey(double x, double y, int layer, unsigned long &chankey){
-
-                                    	bool found_chankey = false;
-                                    	for (unsigned int i_channel = 0; i_channel < channelsLayers.at(layer).size(); i_channel++){
-
-                                    		if (found_chankey) break;
-
-                                    		unsigned long chankey_tmp = channelsLayers.at(layer).at(i_channel);
-                                    		Detector *mrdpmt = geom->ChannelToDetector(chankey_tmp);
-                                    		unsigned long detkey = mrdpmt->GetDetectorID();
-                                    		Paddle *mrdpaddle = (Paddle*) geom->GetDetectorPaddle(detkey);
-                                    		double xmin = mrdpaddle->GetXmin();
-                                    		double xmax = mrdpaddle->GetXmax();
-                                    		double ymin = mrdpaddle->GetYmin();
-                                    		double ymax = mrdpaddle->GetYmax();
+		unsigned long chankey_tmp = channelsLayers.at(layer).at(i_channel);
+		Detector *mrdpmt = geom->ChannelToDetector(chankey_tmp);
+		unsigned long detkey = mrdpmt->GetDetectorID();
+		Paddle *mrdpaddle = (Paddle*) geom->GetDetectorPaddle(detkey);
+		double xmin = mrdpaddle->GetXmin();
+		double xmax = mrdpaddle->GetXmax();
+		double ymin = mrdpaddle->GetYmin();
+		double ymax = mrdpaddle->GetYmax();
 
 		//Check if expected hit was within the channel or not
-                                    		if (xmin <= x && xmax >= x && ymin <= y && ymax >= y){
-                                    			chankey = chankey_tmp;
-                                    			found_chankey = true;
-                                    		}
-                                    	}	
+		if (xmin <= x && xmax >= x && ymin <= y && ymax >= y)
+		{
+			chankey = chankey_tmp;
+			found_chankey = true;
+		}
+	}	
 
-                                    	return true;
+	return true;
 
-                                    } 
+} 
