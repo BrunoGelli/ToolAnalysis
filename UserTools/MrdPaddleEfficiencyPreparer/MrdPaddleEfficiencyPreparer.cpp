@@ -323,6 +323,7 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 							y_layer = StartVertex.Y();
 							if (verbosity > 2) std::cout <<"MrdPaddleEfficiencyPreparer tool: FIRST LAYER - for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
 							hit_chankey = 0;
+							continue;
 						}
 						else if (i_layer == int(zLayers.size()) -1)
 						{
@@ -330,6 +331,7 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 							y_layer = StopVertex.Y();
 							if (verbosity > 2) std::cout <<"MrdPaddleEfficiencyPreparer tool: LAST LAYER - for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
 							hit_chankey = 300;
+							continue;
 						}
 						else
 						{
