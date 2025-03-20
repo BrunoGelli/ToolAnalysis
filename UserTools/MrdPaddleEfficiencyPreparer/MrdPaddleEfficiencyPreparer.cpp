@@ -382,35 +382,35 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 								// cout << "02 dioasdid the third fill" << endl;
 
 								MissingChannel->push_back(hit_chankey);
-								MissingLayer->push_back(i_layer+1);
+								MissingLayer->push_back(i_layer);
 							}
 							
 							// cout << "i think it is failing next " << i_layer << " " << channels_start[i_layer] << " " << channels_start[i_layer+1] << endl;
 
 
-							for (unsigned long i = channels_start[i_layer]; i < channels_start[i_layer+1]; i++)
-							{
-								// cout << "i think it is failing before" << endl;
+							// for (unsigned long i = channels_start[i_layer]; i < channels_start[i_layer+1]; i++)
+							// {
+							// 	// cout << "i think it is failing before" << endl;
 
-								int half_channel = map_chkey_half[i];
-								if (i == hit_chankey) continue;
-								if (half_channel == half_expected_ch)
-								{
-									if (isData) mrdid = channelkey_to_mrdpmtid[i];
-									else mrdid = channelkey_to_mrdpmtid[i]-1;
+							// 	int half_channel = map_chkey_half[i];
+							// 	if (i == hit_chankey) continue;
+							// 	if (half_channel == half_expected_ch)
+							// 	{
+							// 		if (isData) mrdid = channelkey_to_mrdpmtid[i];
+							// 		else mrdid = channelkey_to_mrdpmtid[i]-1;
 
-									expected_MRDHits_layer.at(i_layer).at(i)->Fill(y_layer);
-									if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)==PMTsHit.end()) 
-									{
-                                        if (fabs(i-hit_chankey)<=1 || fabs(hit_chankey-i) <=1)
-                                        { //Only look at neighboring channels
-											if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end())  observed_MRDHits_layer.at(i_layer).at(i)->Fill(y_layer);		
-                                        }								
-                                    }
-                                }
-                            }
+							// 		expected_MRDHits_layer.at(i_layer).at(i)->Fill(y_layer);
+							// 		if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)==PMTsHit.end()) 
+							// 		{
+                            //             if (fabs(i-hit_chankey)<=1 || fabs(hit_chankey-i) <=1)
+                            //             { //Only look at neighboring channels
+							// 				if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end())  observed_MRDHits_layer.at(i_layer).at(i)->Fill(y_layer);		
+                            //             }								
+                            //         }
+                            //     }
+                            // }
                         }
-                        
+
                         else 
                         {
                         	expected_MRDHits.at(i_layer).at(hit_chankey)->Fill(x_layer);
