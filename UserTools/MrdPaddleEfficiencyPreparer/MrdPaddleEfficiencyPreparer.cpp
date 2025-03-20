@@ -322,7 +322,8 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 							x_layer = StartVertex.X();
 							y_layer = StartVertex.Y();
 							std::cout <<"MrdPaddleEfficiencyPreparer tool: FIRST LAYER - for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
-							hit_chankey = 0;
+							FindPaddleChankey(x_layer, y_layer, i_layer, hit_chankey);
+							cout << "Channel key: " << hit_chankey << endl;
 							continue;
 						}
 						else if (i_layer == int(zLayers.size()) -1)
@@ -330,7 +331,8 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 							x_layer = StopVertex.X();
 							y_layer = StopVertex.Y();
 							std::cout <<"MrdPaddleEfficiencyPreparer tool: LAST LAYER - for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
-							hit_chankey = 300;
+							FindPaddleChankey(x_layer, y_layer, i_layer, hit_chankey);
+							cout << "Channel key: " << hit_chankey << endl;
 							continue;
 						}
 						else
@@ -345,7 +347,8 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 							continue;
 						}
 
-						if (orientationLayers.at(i_layer) == 0) {
+						if (orientationLayers.at(i_layer) == 0) 
+						{
 							expected_MRDHits.at(i_layer).at(hit_chankey)->Fill(y_layer);
 							expected_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(y_layer);
 							ExpectedChannel->push_back(hit_chankey);
