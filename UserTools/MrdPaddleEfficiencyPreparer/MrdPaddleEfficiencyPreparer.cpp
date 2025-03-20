@@ -385,11 +385,12 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 								MissingLayer->push_back(i_layer+1);
 							}
 							
-							cout << "i think it is failing next" << endl;
+							cout << "i think it is failing next " << i_layer << " " << channels_start[i_layer] << " " << channels_start[i_layer+1] << endl;
+
 
 							for (unsigned long i = channels_start[i_layer]; i < channels_start[i_layer+1]; i++)
 							{
-								cout << "i think it is failing before" << endl;
+								// cout << "i think it is failing before" << endl;
 
 								int half_channel = map_chkey_half[i];
 								if (i == hit_chankey) continue;
