@@ -113,8 +113,6 @@
 /pnfs/annie/persistent/users/dfleming/processedrawdata_mrd/R5018/R5018_ProcessedRawData_MRD_R5018S0p110
 /pnfs/annie/persistent/users/dfleming/processedrawdata_mrd/R5018/R5018_ProcessedRawData_MRD_R5018S0p111
 /pnfs/annie/persistent/users/dfleming/processedrawdata_mrd/R5018/R5018_ProcessedRawData_MRD_R5018S0p112
-/pnfs/annie/persistent/users/dfleming/processedrawdata_mrd/R5018/R5018_ProcessedRawData_MRD_R5018S0p113
-/pnfs/annie/persistent/users/dfleming/processedrawdata_mrd/R5018/R5018_ProcessedRawData_MRD_R5018S0p114
 /pnfs/annie/persistent/users/dfleming/processedrawdata_mrd/R5018/R5018_ProcessedRawData_MRD_R5018S0p115
 /pnfs/annie/persistent/users/dfleming/processedrawdata_mrd/R5018/R5018_ProcessedRawData_MRD_R5018S0p116
 /pnfs/annie/persistent/users/dfleming/processedrawdata_mrd/R5018/R5018_ProcessedRawData_MRD_R5018S0p117
