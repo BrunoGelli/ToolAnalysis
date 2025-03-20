@@ -96,7 +96,7 @@ class MrdPaddleEfficiencyPreparer: public Tool {
 	std::map<unsigned long, int> map_chkey_half;
 
         double extents[11] = {1.318,1.146,1.318,1.299,1.318,1.318,1.318,1.521,1.318,1.521,1.318};
- 	int channels_start[12] = {26,52,82,108,142,168,194,220,250,276,306,332};
+ 	int channels_start[12] = {26,52,82,108,142,168,194,220,250,276,306,331};
 	std::map<int,std::map<unsigned long,TH1D*>> observed_MRDHits_layer;
  	std::map<int,std::map<unsigned long,TH1D*>> expected_MRDHits_layer;
 
