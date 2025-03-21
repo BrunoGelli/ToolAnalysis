@@ -202,7 +202,7 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 		m_data->Stores["MRDTracks"]->Get("NumMrdSubEvents",numsubevs);
 		m_data->Stores["MRDTracks"]->Get("NumMrdTracks",numtracksinev);
 
-		if(verbosity>2) std::cout<<"MrdPaddleEfficiencyPreparer tool: Event "<<EventNumber<<" had "<<numtracksinev<<" tracks in "<<numsubevs<<" subevents"<<endl;
+		std::cout<<"MrdPaddleEfficiencyPreparer tool: Event "<<EventNumber<<" had "<<numtracksinev<<" tracks in "<<numsubevs<<" subevents"<<endl;
 
 		// Only look at events with a single track (cut may be relaxed in the future)		
 
@@ -320,7 +320,7 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 
                         if (fabs(dirZ) < 0.001) 
 						{
-							Log("MrdPaddleEfficiencyPreparer tool: StartVertex = EndVertex! Track was not fitted well",v_error,verbosity);
+							cout << "------> StartVertex = EndVertex! Track was not fitted well" << endl;
 							continue;
 						}
 						
@@ -328,41 +328,42 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 						{
 							x_layer = StartVertex.X();
 							y_layer = StartVertex.Y();
-							std::cout <<"MrdPaddleEfficiencyPreparer tool: FIRST LAYER - for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
 							FindPaddleChankey(x_layer, y_layer, i_layer, hit_chankey);
-							cout << "Channel key: " << hit_chankey << endl;
+							cout << "------> FIRST LAYER - for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
+							cout << "------> Channel key: " << hit_chankey << endl;
 							// continue;
 						}
 						else if (i_layer == int(zLayers.size()) -1)
 						{
 							x_layer = StopVertex.X();
 							y_layer = StopVertex.Y();
-							std::cout <<"MrdPaddleEfficiencyPreparer tool: LAST LAYER - for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
 							FindPaddleChankey(x_layer, y_layer, i_layer, hit_chankey);
-							cout << "Channel key: " << hit_chankey << endl;
-							// continue;
+							cout << "------> LAST LAYER - for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
+							cout << "------> Channel key: " << hit_chankey << endl;
 						}
 						else
 						{
 							FindPaddleIntersection(StartVertex, StopVertex, x_layer, y_layer, zLayers.at(i_layer));
-							if (verbosity > 2) std::cout <<"MrdPaddleEfficiencyPreparer tool: FindPaddleIntersection found x_layer = "<<x_layer<<"& y_layer = "<<y_layer<<" for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
+							cout << "------> FindPaddleIntersection found x_layer = "<<x_layer<<"& y_layer = "<<y_layer<<" for track with start position ("<<StartVertex.X()<<","<<StartVertex.Y()<<","<<StartVertex.Z()<<"), stop position ("<<StopVertex.X()<<","<<StopVertex.Y()<<","<<StopVertex.Z()<<") and z intersection point "<<zLayers.at(i_layer)<<std::endl;
 							FindPaddleChankey(x_layer, y_layer, i_layer, hit_chankey);
+							cout << "------> Channel key: " << hit_chankey << endl;
 						}
 
 						if (hit_chankey == 99999) {
-							std::cout <<"FindMrdPaddleEfficiencyPreparer: Did not find paddle with the desired intersection properties for this MRD layer, abort. "<<std::endl;
+							std::cout << "------> Did not find paddle with the desired intersection properties for this MRD layer, abort. "<<std::endl;
 							continue;
 						}
 
 						if (orientationLayers.at(i_layer) == 0) 
 						{
-							// cout << "enter the if" << endl;
+							std::cout << "------> Event happened at a layer with orientation 0 "<<std::endl;
+
 							expected_MRDHits.at(i_layer).at(hit_chankey)->Fill(y_layer);
-							// cout << "did the first fill" << endl;
 							expected_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(y_layer);
-							// cout << "did the second fill" << endl;
 							ExpectedChannel->push_back(hit_chankey);
-							// cout << "did the third fill" << endl;
+							cout << "------> ------> expected_MRDHits at " 		 << i_layer << " at " << hit_chankey << ": fill with " << y_layer << endl;
+							cout << "------> ------> expected_MRDHits_layer at " << i_layer << " at " << hit_chankey << ": fill with " << y_layer << endl;
+							cout << "------> ------> ExpectedChannel: "          << hit_chankey << endl;
 
 							int half_expected_ch = map_chkey_half[hit_chankey];
 							int mrdid;
@@ -370,12 +371,18 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 							if (isData) mrdid = channelkey_to_mrdpmtid[hit_chankey];
 							else mrdid = channelkey_to_mrdpmtid[hit_chankey]-1;
 
+							cout << "------> ------> half_expected_ch " 		 << map_chkey_half[hit_chankey] << endl;
+							cout << "------> ------> mrdid " 	            	 << mrdid << endl;
+
+
 							if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end()) 
 							{
 								observed_MRDHits.at(i_layer).at(hit_chankey)->Fill(y_layer);
 								observed_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(y_layer);
 								// cout << "01 dioasdid the third fill" << endl;
-
+								cout << "------> ------> ------> found a hit at " 		 	<< std::find(PMTsHit.begin(),PMTsHit.end(),mrdid) << endl;
+								cout << "------> ------> ------> observed_MRDHits " 		<< i_layer << " at " << hit_chankey << ": fill with " << y_layer << endl;
+								cout << "------> ------> ------> observed_MRDHits_layer: "  << i_layer << " at " << hit_chankey << ": fill with " << y_layer << endl;
 							} 
 							else 
 							{
@@ -383,28 +390,52 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 
 								MissingChannel->push_back(hit_chankey);
 								MissingLayer->push_back(i_layer);
+
+								cout << "------> ------> ------> NOT found a hit at " 	 	<< std::find(PMTsHit.begin(),PMTsHit.end(),mrdid) << endl;
+								cout << "------> ------> ------> MissingChannel fill with " << hit_chankey << endl;
+								cout << "------> ------> ------> MissingLayer fill with "   << i_layer << endl;
 							}
 							
 							// cout << "i think it is failing next " << i_layer << " " << channels_start[i_layer] << " " << channels_start[i_layer+1] << endl;
 
-
+							cout << "------> ------> Proceeding for a for loop (channel keys in that layer?) "   << channels_start[i_layer] << " to "  << channels_start[i_layer+1] << endl;
 							for (unsigned long i = channels_start[i_layer]; i < channels_start[i_layer+1]; i++)
 							{
-								// cout << "i think it is failing before" << endl;
+								cout << "------> ------> ------> at i = "   << i;
 
 								int half_channel = map_chkey_half[i];
-								if (i == hit_chankey) continue;
+                        		
+                        		cout << "; half channel: " <<  half_channel << " | while the half_expected_ch: " << half_expected_ch << endl;
+
+								if (i == hit_chankey) continue; // skips current paddle -> This is either a confirmed hit or a confirmed not hit. We know that already...
+
 								if (half_channel == half_expected_ch)
 								{
 									if (isData) mrdid = channelkey_to_mrdpmtid[i];
 									else mrdid = channelkey_to_mrdpmtid[i]-1;
 
+									cout << "------> ------> ------> ------> if were equal, find the MRDid for this channelKey (" << i << ") = " << mrdid << endl;
+
 									expected_MRDHits_layer.at(i_layer).at(i)->Fill(y_layer);
+
+									cout << "------> ------> ------> ------> expected_MRDHits_layer: "  << i_layer << " at " << i << ": fill with " << y_layer << " (why?)" << endl;
+
 									if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)==PMTsHit.end()) 
 									{
+										cout << "------> ------> ------> ------> ------> not found a PMTsHit for MRDid: "  << mrdid << " (why?)" << endl;
+										cout << "------> ------> ------> ------> ------> checks if fabs(i-hit_chankey)<=1 || fabs(hit_chankey-i) <=1" << endl;
+										cout << "------> ------> ------> ------> ------> i = " << i << " and hit_chankey = " << hit_chankey << endl;
                                         if (fabs(i-hit_chankey)<=1 || fabs(hit_chankey-i) <=1)
                                         { //Only look at neighboring channels
-											if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end())  observed_MRDHits_layer.at(i_layer).at(i)->Fill(y_layer);		
+
+											cout << "------> ------> ------> ------> ------> ------> somehow it is..." << endl;
+											cout << "------> ------> ------> ------> ------> ------> std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end()" << endl;
+
+											if (std::find(PMTsHit.begin(),PMTsHit.end(),mrdid)!=PMTsHit.end())  
+											{
+												cout << "------> ------> ------> ------> ------> ------> ------> no way" << endl;
+												observed_MRDHits_layer.at(i_layer).at(i)->Fill(y_layer);	
+											}	
                                         }								
                                     }
                                 }
@@ -436,8 +467,7 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
                         	{
                         		
                         		int half_channel = map_chkey_half[i];
-                        		cout << "channel Key number: " << i << " | half channel: " <<  half_channel << endl;
-                        		
+
                         		if (i==hit_chankey) continue;
                         		
                         		if (half_channel == half_expected_ch)
