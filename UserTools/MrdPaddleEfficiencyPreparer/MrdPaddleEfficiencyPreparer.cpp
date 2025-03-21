@@ -380,7 +380,7 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 								observed_MRDHits.at(i_layer).at(hit_chankey)->Fill(y_layer);
 								observed_MRDHits_layer.at(i_layer).at(hit_chankey)->Fill(y_layer);
 								// cout << "01 dioasdid the third fill" << endl;
-								cout << "------> ------> ------> found a hit at " 		 	<< std::find(PMTsHit.begin(),PMTsHit.end(),mrdid) << endl;
+								cout << "------> ------> ------> found a hit at " 		 	<< endl;
 								cout << "------> ------> ------> observed_MRDHits " 		<< i_layer << " at " << hit_chankey << ": fill with " << y_layer << endl;
 								cout << "------> ------> ------> observed_MRDHits_layer: "  << i_layer << " at " << hit_chankey << ": fill with " << y_layer << endl;
 							} 
@@ -391,7 +391,7 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 								MissingChannel->push_back(hit_chankey);
 								MissingLayer->push_back(i_layer);
 
-								cout << "------> ------> ------> NOT found a hit at " 	 	<< std::find(PMTsHit.begin(),PMTsHit.end(),mrdid) << endl;
+								cout << "------> ------> ------> NOT found a hit at " 	 	<< endl;
 								cout << "------> ------> ------> MissingChannel fill with " << hit_chankey << endl;
 								cout << "------> ------> ------> MissingLayer fill with "   << i_layer << endl;
 							}
