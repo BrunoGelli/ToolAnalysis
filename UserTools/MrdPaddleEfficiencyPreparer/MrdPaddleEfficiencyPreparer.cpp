@@ -250,6 +250,7 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 				thisTrackAsBoostStore->Get("LayersHit",LayersHit);
 				thisTrackAsBoostStore->Get("MrdTrackID",MrdTrackID);
 				thisTrackAsBoostStore->Get("IsMrdPenetrating",IsMrdPenetrating); 
+				thisTrackAsBoostStore->Print(false);  // or use GetKeys(keys) if defined
 
 				StartVertexX = StartVertex.X();
 				StartVertexY = StartVertex.Y();
