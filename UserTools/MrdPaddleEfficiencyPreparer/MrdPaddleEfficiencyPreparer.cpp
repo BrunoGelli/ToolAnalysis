@@ -148,11 +148,12 @@ bool MrdPaddleEfficiencyPreparer::Initialise(std::string configfile, DataModel &
 
 	}
 
-	hist_chankey = new TH1F("hist_chankey","MRD Chankeys - Efficiency",340,0,340);
-	hist_nlayers = new TH1F("hist_nlayers","Number of hit MRD layers",11,0,11);
-	MissingChannel = new std::vector<int>;
+	hist_chankey 	= new TH1F("hist_chankey","MRD Chankeys - Efficiency",340,0,340);
+	hist_nlayers 	= new TH1F("hist_nlayers","Number of hit MRD layers",11,0,11);
+	MissingChannel 	= new std::vector<int>;
 	ExpectedChannel = new std::vector<int>;
-	MissingLayer = new std::vector<int>;
+	MissingLayer 	= new std::vector<int>;
+	ActualHits 		= new std::vector<int>;
 	//hist_timediff = new TH1F("hist_timediff","Timediff first & last layer",2000,-2000,2000);
 	tree_trackfit = new TTree("tree_trackfit","tree_trackfit");
 	tree_trackfit->Branch("RunNum",&RunNumber);
@@ -160,6 +161,7 @@ bool MrdPaddleEfficiencyPreparer::Initialise(std::string configfile, DataModel &
 	tree_trackfit->Branch("MRDTriggerType",&MRDTriggertype);
 	tree_trackfit->Branch("NumMrdTracks",&numtracksinev);
 	tree_trackfit->Branch("MrdTrackID",&MrdTrackID);
+	tree_trackfit->Branch("ActualHits",&ActualHits);
 	tree_trackfit->Branch("NPMTsHit",&NPMTsHit);
 	tree_trackfit->Branch("NLayersHit",&NLayersHit);
 	tree_trackfit->Branch("StartVertexX",&StartVertexX);
@@ -299,6 +301,7 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 						int mrdid = PMTsHit.at(i_pmt);
 						unsigned long chankey = mrdpmtid_to_channelkey[mrdid];
 						hist_chankey->Fill(chankey);
+						ActualHits->push_back(chankey);
 					}
 
 					for (int i_layer = 0; i_layer < (int) zLayers.size(); i_layer++)
