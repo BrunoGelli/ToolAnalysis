@@ -81,6 +81,7 @@ class MrdPaddleEfficiencyPreparer: public Tool {
 	std::vector<int> *ExpectedChannel = nullptr;
 	int NumMissingChannel = 0;
 	std::vector<int> *MissingLayer = nullptr;
+	std::vector<int> *ActualHits = nullptr;
 	int NumMissingLayer = 0;
 
  	TFile *hist_file = nullptr;
