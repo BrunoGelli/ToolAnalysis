@@ -210,6 +210,7 @@ bool MrdPaddleEfficiencyPreparer::Execute(){
 
 		MrdTrackID=-1;
 		NPMTsHit=-1;
+		ActualHits->clear();
 		NLayersHit=-1;
 		StartVertexX=-999;
 		StartVertexY=-999;
